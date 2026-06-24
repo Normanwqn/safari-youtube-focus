@@ -1,0 +1,55 @@
+/* YouTube Focus — recommendation-blocking styles.
+   Everything is gated behind data-* attributes set on <html> by content.js,
+   so the popup toggles can switch features on/off without reloading the CSS. */
+
+/* ---------- Home feed (the recommendation grid at youtube.com) ---------- */
+html[data-ytf-hide-home="1"] ytd-browse[page-subtype="home"] #contents.ytd-rich-grid-renderer,
+html[data-ytf-hide-home="1"] ytd-browse[page-subtype="home"] ytd-rich-grid-renderer,
+html[data-ytf-hide-home="1"] ytd-browse[page-subtype="home"] #primary > ytd-rich-grid-renderer {
+  display: none !important;
+}
+
+/* Friendly placeholder so the home page isn't just blank */
+html[data-ytf-hide-home="1"] ytd-browse[page-subtype="home"] #primary::before {
+  content: "YouTube Focus — recommendations hidden. Use search to find what you came for.";
+  display: block;
+  margin: 80px auto;
+  max-width: 480px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--yt-spec-text-secondary, #909090);
+}
+
+/* ---------- Watch page: "Up next" / related video sidebar ---------- */
+html[data-ytf-hide-related="1"] ytd-watch-next-secondary-results-renderer,
+html[data-ytf-hide-related="1"] #related.ytd-watch-flexy {
+  display: none !important;
+}
+/* Let the player column take the freed width */
+html[data-ytf-hide-related="1"] #primary.ytd-watch-flexy {
+  max-width: none !important;
+}
+
+/* ---------- End-screen video suggestions (the grid after a video ends) ---------- */
+html[data-ytf-hide-related="1"] .html5-endscreen,
+html[data-ytf-hide-related="1"] .ytp-endscreen-content,
+html[data-ytf-hide-related="1"] .ytp-ce-video,
+html[data-ytf-hide-related="1"] .ytp-ce-playlist,
+html[data-ytf-hide-related="1"] .ytp-ce-channel {
+  display: none !important;
+}
+
+/* ---------- Shorts shelves & sidebar entry ---------- */
+html[data-ytf-hide-shorts="1"] ytd-rich-shelf-renderer[is-shorts],
+html[data-ytf-hide-shorts="1"] ytd-reel-shelf-renderer,
+html[data-ytf-hide-shorts="1"] ytd-guide-entry-renderer:has(a[title="Shorts"]),
+html[data-ytf-hide-shorts="1"] ytd-mini-guide-entry-renderer[aria-label="Shorts"] {
+  display: none !important;
+}
+
+/* ---------- Hover auto-preview thumbnails ---------- */
+html[data-ytf-block-autoplay="1"] ytd-video-preview,
+html[data-ytf-block-autoplay="1"] #video-preview {
+  display: none !important;
+}

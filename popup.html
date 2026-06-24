@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        font: 14px -apple-system, system-ui, sans-serif;
+        width: 260px;
+        margin: 0;
+        padding: 14px 16px;
+      }
+      h1 {
+        font-size: 15px;
+        margin: 0 0 12px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+      }
+      .row:first-of-type { border-top: none; }
+      label { cursor: pointer; }
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+      .hint {
+        margin-top: 12px;
+        font-size: 11px;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>YouTube Focus</h1>
+
+    <div class="row">
+      <label for="hideHome">Hide home feed</label>
+      <input type="checkbox" id="hideHome" />
+    </div>
+    <div class="row">
+      <label for="hideRelated">Hide related / end-screen</label>
+      <input type="checkbox" id="hideRelated" />
+    </div>
+    <div class="row">
+      <label for="hideShorts">Hide Shorts</label>
+      <input type="checkbox" id="hideShorts" />
+    </div>
+    <div class="row">
+      <label for="blockAutoplay">Block autoplay</label>
+      <input type="checkbox" id="blockAutoplay" />
+    </div>
+
+    <p class="hint">Changes apply instantly to open YouTube tabs.</p>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
