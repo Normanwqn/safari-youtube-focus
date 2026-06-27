@@ -29,7 +29,7 @@
 
   // Cheap and click-free: only flips the CSS gate attributes on <html>.
   // Autoplay (which clicks player controls) is handled separately by
-  // handleAutoplay(), gated to watch pages.
+  // disableAutoplayOnce(), as a one-shot per video on watch pages.
   function applySettings() {
     const root = document.documentElement;
     root.setAttribute("data-ytf-hide-home", settings.hideHome ? "1" : "0");
@@ -57,7 +57,11 @@
         settings[key] = changes[key].newValue;
       }
       applySettings();
-      handleAutoplay();
+      // If autoplay-blocking was just turned on, re-run the one-shot.
+      if (settings.blockAutoplay) {
+        autoplayHandled = false;
+        scheduleAutoplayDisable();
+      }
     });
   } catch (e) {
     /* ignore */
@@ -65,34 +69,17 @@
 
   /* ---------------- autoplay blocking ----------------
    *
-   * IMPORTANT: every action here CLICKS a player control, which moves focus.
-   * It must ONLY run on a watch page. Running it on the home/search/results
-   * pages would steal focus from the search box mid-typing and submit the
-   * highlighted autocomplete suggestion instead of what you typed.
+   * Turning off autoplay means CLICKING the player's autoplay toggle, which
+   * moves keyboard focus to that control and makes the browser scroll it into
+   * view. If we did that on every DOM mutation, then scrolling a list or
+   * pressing a button to jump to a section (both mutate the DOM) would yank
+   * you back to the player. So this is strictly ONE-SHOT per video: we click
+   * the toggle off once, right after the player first appears, then never
+   * again until you navigate to a different video.
    */
 
   function onWatchPage() {
     return location.pathname === "/watch";
-  }
-
-  // Turn off the on-player "Autoplay" toggle if YouTube has it on, and cancel
-  // any "up next" auto-advance countdown. No-op everywhere except /watch.
-  function handleAutoplay() {
-    if (!settings.blockAutoplay || !onWatchPage()) return;
-
-    const toggle = document.querySelector(
-      ".ytp-autonav-toggle-button[aria-checked='true']"
-    );
-    // Only click if the search box doesn't currently have focus, so we never
-    // yank the caret out from under the user.
-    if (toggle && !searchHasFocus()) {
-      toggle.click();
-    }
-
-    const cancel = document.querySelector(
-      ".ytp-autonav-endscreen-upnext-cancel-button, .ytp-upnext-cancel-button"
-    );
-    if (cancel) cancel.click();
   }
 
   function searchHasFocus() {
@@ -100,15 +87,38 @@
     return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
   }
 
+  // Reset per video so a freshly loaded video gets autoplay turned off once.
+  let autoplayHandled = false;
+  let lastWatchKey = "";
+
+  // Click the autoplay toggle off a single time. Returns true once it has
+  // resolved (either it was already off, or we just turned it off) so the
+  // retry schedule can stop early.
+  function disableAutoplayOnce() {
+    if (autoplayHandled) return true;
+    if (!settings.blockAutoplay || !onWatchPage()) return false;
+    if (searchHasFocus()) return false; // never steal focus from typing
+
+    const toggle = document.querySelector(".ytp-autonav-toggle-button");
+    if (!toggle) return false; // player controls not rendered yet — retry later
+
+    if (toggle.getAttribute("aria-checked") === "true") {
+      toggle.click(); // the only focus-moving action, and it happens once
+    }
+    autoplayHandled = true; // already off or just turned off — done for this video
+    return true;
+  }
+
   /* ---------------- run + re-run on SPA navigation ---------------- */
 
-  // Cheap, no clicks — safe to run on every mutation/navigation everywhere.
+  // Cheap, no clicks, no focus changes — safe to run on every mutation.
   function applyHiding() {
     applySettings();
   }
 
-  // Observe DOM mutations but only flip CSS attributes; clicks are handled
-  // separately and gated to watch pages.
+  // The observer ONLY flips CSS attributes. It never clicks anything, so it
+  // can fire as often as YouTube mutates the DOM without disturbing scroll
+  // position or focus.
   let scheduled = false;
   const observer = new MutationObserver(() => {
     if (scheduled) return;
@@ -116,7 +126,6 @@
     requestAnimationFrame(() => {
       scheduled = false;
       applyHiding();
-      handleAutoplay();
     });
   });
 
@@ -126,13 +135,24 @@
     }
   }
 
-  // YouTube fires this when it finishes an in-app navigation. Re-apply hiding
-  // immediately, and give the late-rendering player a few tries for autoplay.
+  // The player renders after navigation finishes, so retry the one-shot a few
+  // times and stop as soon as it resolves.
+  function scheduleAutoplayDisable() {
+    if (!settings.blockAutoplay || !onWatchPage()) return;
+    [200, 600, 1500, 3000].forEach((ms) =>
+      setTimeout(() => disableAutoplayOnce(), ms)
+    );
+  }
+
+  // YouTube fires this when it finishes an in-app navigation.
   function onNavigate() {
     applyHiding();
-    if (settings.blockAutoplay && onWatchPage()) {
-      [300, 1000, 2500].forEach((ms) => setTimeout(handleAutoplay, ms));
+    const key = onWatchPage() ? location.search : ""; // ?v=... identifies the video
+    if (key !== lastWatchKey) {
+      lastWatchKey = key;
+      autoplayHandled = false; // new video — allow one autoplay-off again
     }
+    scheduleAutoplayDisable();
   }
   window.addEventListener("yt-navigate-finish", onNavigate, true);
   document.addEventListener("yt-navigate-finish", onNavigate, true);
