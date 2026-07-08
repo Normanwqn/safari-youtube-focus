@@ -4,12 +4,18 @@ Blocks the YouTube recommendation feed and stops autoplay.
 
 **What it does**
 - Hides the home-page recommendation grid (shows a small placeholder instead).
-- Hides the "Up next" / related-video sidebar on watch pages.
-- Hides end-screen video suggestions (the grid that covers a video when it ends).
+  This one is **always on** — there is no toggle to bring the feed back.
+- Hides the "Up next" / related-video sidebar and end-screen suggestions on watch pages.
 - Hides Shorts shelves and the Shorts sidebar entry.
-- Keeps YouTube's "Autoplay next" toggle **off** and cancels the auto-advance countdown.
+- Hides the comments section on watch pages.
+- Hides the Subscriptions feed page and its sidebar links.
+- Keeps YouTube's "Autoplay next" toggle **off** (one-shot per video, so it never
+  disturbs scrolling or in-page navigation).
 
-Each feature can be toggled from the toolbar popup; changes apply live to open tabs.
+Every feature except the home feed can be toggled from the toolbar popup. Changes
+apply live to open tabs and **sync across your devices via iCloud** (`storage.sync`),
+so the same settings apply on every Mac signed into your Apple ID with the
+extension enabled.
 
 ## Files
 

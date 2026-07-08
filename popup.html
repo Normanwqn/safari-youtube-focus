@@ -23,6 +23,14 @@
         border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
       }
       .row:first-of-type { border-top: none; }
+      .row.locked label { cursor: default; opacity: 0.7; }
+      .always {
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: color-mix(in srgb, currentColor 10%, transparent);
+        opacity: 0.7;
+      }
       label { cursor: pointer; }
       input[type="checkbox"] {
         width: 18px;
@@ -39,9 +47,9 @@
   <body>
     <h1>YouTube Focus</h1>
 
-    <div class="row">
-      <label for="hideHome">Hide home feed</label>
-      <input type="checkbox" id="hideHome" />
+    <div class="row locked">
+      <label>Home feed</label>
+      <span class="always">Always hidden</span>
     </div>
     <div class="row">
       <label for="hideRelated">Hide related / end-screen</label>
@@ -52,11 +60,19 @@
       <input type="checkbox" id="hideShorts" />
     </div>
     <div class="row">
+      <label for="hideComments">Hide comments</label>
+      <input type="checkbox" id="hideComments" />
+    </div>
+    <div class="row">
+      <label for="hideSubscriptions">Hide subscriptions</label>
+      <input type="checkbox" id="hideSubscriptions" />
+    </div>
+    <div class="row">
       <label for="blockAutoplay">Block autoplay</label>
       <input type="checkbox" id="blockAutoplay" />
     </div>
 
-    <p class="hint">Changes apply instantly to open YouTube tabs.</p>
+    <p class="hint">Changes apply instantly and sync across your devices via iCloud.</p>
 
     <script src="popup.js"></script>
   </body>

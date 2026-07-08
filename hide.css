@@ -48,6 +48,35 @@ html[data-ytf-hide-shorts="1"] ytd-mini-guide-entry-renderer[aria-label="Shorts"
   display: none !important;
 }
 
+/* ---------- Comments (watch page + Shorts) ---------- */
+html[data-ytf-hide-comments="1"] ytd-comments#comments,
+html[data-ytf-hide-comments="1"] #comments.ytd-watch-flexy,
+html[data-ytf-hide-comments="1"] ytd-item-section-renderer#comments {
+  display: none !important;
+}
+
+/* ---------- Subscriptions (feed page + sidebar links) ---------- */
+/* Blank the Subscriptions feed page grid, like the home feed */
+html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer,
+html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #contents.ytd-section-list-renderer {
+  display: none !important;
+}
+html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #primary::before {
+  content: "YouTube Focus — subscriptions feed hidden.";
+  display: block;
+  margin: 80px auto;
+  max-width: 480px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--yt-spec-text-secondary, #909090);
+}
+/* Remove the Subscriptions entries from the left sidebar */
+html[data-ytf-hide-subscriptions="1"] ytd-guide-entry-renderer:has(a[href="/feed/subscriptions"]),
+html[data-ytf-hide-subscriptions="1"] ytd-mini-guide-entry-renderer:has(a[href="/feed/subscriptions"]) {
+  display: none !important;
+}
+
 /* ---------- Hover auto-preview thumbnails ---------- */
 html[data-ytf-block-autoplay="1"] ytd-video-preview,
 html[data-ytf-block-autoplay="1"] #video-preview {

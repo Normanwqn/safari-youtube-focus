@@ -16,10 +16,26 @@
 
   const api = typeof browser !== "undefined" ? browser : chrome;
 
+  // Prefer storage.sync — Safari backs it with iCloud, so settings follow the
+  // user across every device signed into the same Apple ID. Fall back to local
+  // if sync isn't available (older Safari, or iCloud disabled).
+  function getStore() {
+    try {
+      if (api.storage && api.storage.sync) return api.storage.sync;
+    } catch (e) {
+      /* ignore */
+    }
+    return api.storage.local;
+  }
+  const store = getStore();
+
+  // NOTE: the home feed is ALWAYS hidden — there is deliberately no setting for
+  // it, so it can't be re-enabled. Only these features are user-toggleable.
   const DEFAULTS = {
-    hideHome: true,
     hideRelated: true,
     hideShorts: true,
+    hideComments: true,
+    hideSubscriptions: true,
     blockAutoplay: true,
   };
 
@@ -32,15 +48,17 @@
   // disableAutoplayOnce(), as a one-shot per video on watch pages.
   function applySettings() {
     const root = document.documentElement;
-    root.setAttribute("data-ytf-hide-home", settings.hideHome ? "1" : "0");
+    root.setAttribute("data-ytf-hide-home", "1"); // always on, not configurable
     root.setAttribute("data-ytf-hide-related", settings.hideRelated ? "1" : "0");
     root.setAttribute("data-ytf-hide-shorts", settings.hideShorts ? "1" : "0");
+    root.setAttribute("data-ytf-hide-comments", settings.hideComments ? "1" : "0");
+    root.setAttribute("data-ytf-hide-subscriptions", settings.hideSubscriptions ? "1" : "0");
     root.setAttribute("data-ytf-block-autoplay", settings.blockAutoplay ? "1" : "0");
   }
 
   function loadSettings() {
     try {
-      api.storage.local.get(DEFAULTS, (stored) => {
+      store.get(DEFAULTS, (stored) => {
         if (stored) settings = { ...DEFAULTS, ...stored };
         applySettings();
       });
@@ -49,12 +67,12 @@
     }
   }
 
-  // React live to popup toggles.
+  // React live to popup toggles (and to changes synced from other devices).
+  // We only ever write to one store, so applying on any area is safe.
   try {
-    api.storage.onChanged.addListener((changes, area) => {
-      if (area !== "local") return;
+    api.storage.onChanged.addListener((changes) => {
       for (const key of Object.keys(changes)) {
-        settings[key] = changes[key].newValue;
+        if (key in settings) settings[key] = changes[key].newValue;
       }
       applySettings();
       // If autoplay-blocking was just turned on, re-run the one-shot.
