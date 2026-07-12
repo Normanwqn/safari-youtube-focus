@@ -36,6 +36,7 @@
     hideShorts: true,
     hideComments: true,
     hideSubscriptions: true,
+    hideEntertainment: true,
     blockAutoplay: true,
   };
 
@@ -53,6 +54,7 @@
     root.setAttribute("data-ytf-hide-shorts", settings.hideShorts ? "1" : "0");
     root.setAttribute("data-ytf-hide-comments", settings.hideComments ? "1" : "0");
     root.setAttribute("data-ytf-hide-subscriptions", settings.hideSubscriptions ? "1" : "0");
+    root.setAttribute("data-ytf-hide-entertainment", settings.hideEntertainment ? "1" : "0");
     root.setAttribute("data-ytf-block-autoplay", settings.blockAutoplay ? "1" : "0");
   }
 
@@ -80,6 +82,8 @@
         autoplayHandled = false;
         scheduleAutoplayDisable();
       }
+      // If entertainment-filtering was just turned on, tag current items.
+      if (settings.hideEntertainment) filterEntertainment();
     });
   } catch (e) {
     /* ignore */
@@ -127,11 +131,97 @@
     return true;
   }
 
+  /* ---------------- entertainment filtering ----------------
+   *
+   * Heuristic, keyword-based: hide videos in listings (mainly search results)
+   * whose title/channel obviously signal entertainment. This only reads text
+   * and TAGS the item with data-ytf-ent; hide.css does the hiding. No clicks,
+   * so it never disturbs scroll or focus. Tune the list below to taste — it is
+   * deliberately conservative ("obviously" entertainment) to limit false hits.
+   */
+
+  const ENTERTAINMENT_PATTERNS = [
+    // reactions / pranks / drama
+    // (note: "react … to", not bare "react" — avoids the React JS framework)
+    "reaction", "react(s|ing)? to", "prank", "gone wrong",
+    "caught on camera", "exposed", "\\bdrama\\b", "responds? to", "clap ?back",
+    // vlogs / lifestyle
+    "\\bvlog", "day in (my|the) life", "story ?time", "grwm",
+    "get ready with me",
+    // gaming
+    "gameplay", "\\bgaming\\b", "playthrough", "speedrun",
+    "let'?s play", "no commentary", "minecraft", "fortnite", "roblox", "\\bgta\\b",
+    // music / performance
+    "official music video", "official video", "lyric video", "\\bmusic video\\b",
+    "live performance", "\\bconcert\\b",
+    // comedy / memes / compilations
+    "\\bfunny\\b", "\\bmemes?\\b", "\\bcomedy\\b", "\\bskit\\b", "tik ?tok",
+    "compilation", "try not to (laugh|cry)", "bloopers?", "\\bfails?\\b",
+    // challenges / stunts
+    "challenge", "24 ?hours?", "mr ?beast", "\\bstunt",
+    // sports highlights
+    "highlights", "full (match|game)",
+    // trailers / movies
+    "official trailer", "\\bteaser\\b", "movie clip",
+    // shopping / food entertainment
+    "unboxing", "\\bhaul\\b", "mukbang", "\\basmr\\b", "oddly satisfying",
+  ];
+  const ENT_RE = new RegExp("(" + ENTERTAINMENT_PATTERNS.join("|") + ")", "i");
+
+  // Veto list: if a title looks educational/technical, keep it even when an
+  // entertainment keyword also matched (e.g. "coding challenge", "math
+  // olympiad", "highlights of the lecture"). Bias is toward keeping.
+  const ALLOW_PATTERNS = [
+    "tutorial", "lecture", "\\bcourse\\b", "explained", "how to",
+    "documentation", "\\bapi\\b", "leetcode", "algorithm", "\\bmath\\b",
+    "physics", "chemistry", "biology", "interview", "coding", "programming",
+    "kaggle", "proof", "theorem", "lesson", "\\bexam\\b",
+  ];
+  const ALLOW_RE = new RegExp("(" + ALLOW_PATTERNS.join("|") + ")", "i");
+
+  const VIDEO_ITEM_SELECTOR = [
+    "ytd-video-renderer",
+    "ytd-rich-item-renderer",
+    "ytd-grid-video-renderer",
+    "ytd-compact-video-renderer",
+    "ytd-playlist-video-renderer",
+  ].join(",");
+
+  function itemText(el) {
+    const title = el.querySelector(
+      "#video-title, #video-title-link, .yt-lockup-metadata-view-model__title"
+    );
+    const channel = el.querySelector(
+      "#channel-name, ytd-channel-name, .yt-content-metadata-view-model-wiz__metadata-text"
+    );
+    const titleText =
+      (title && (title.getAttribute("title") || title.textContent)) || "";
+    const channelText = (channel && channel.textContent) || "";
+    return (titleText + " " + channelText).trim();
+  }
+
+  // Tag not-yet-scanned video items as entertainment ("1") or not ("0").
+  // Items whose text hasn't rendered yet are left unmarked so a later pass
+  // retries them.
+  function filterEntertainment() {
+    if (!settings.hideEntertainment) return;
+    const items = document.querySelectorAll(
+      VIDEO_ITEM_SELECTOR + ":not([data-ytf-ent])"
+    );
+    items.forEach((el) => {
+      const text = itemText(el);
+      if (!text) return; // not populated yet — retry next pass
+      const isEntertainment = ENT_RE.test(text) && !ALLOW_RE.test(text);
+      el.setAttribute("data-ytf-ent", isEntertainment ? "1" : "0");
+    });
+  }
+
   /* ---------------- run + re-run on SPA navigation ---------------- */
 
   // Cheap, no clicks, no focus changes — safe to run on every mutation.
   function applyHiding() {
     applySettings();
+    filterEntertainment();
   }
 
   // The observer ONLY flips CSS attributes. It never clicks anything, so it

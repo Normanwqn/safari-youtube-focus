@@ -9,6 +9,9 @@ Blocks the YouTube recommendation feed and stops autoplay.
 - Hides Shorts shelves and the Shorts sidebar entry.
 - Hides the comments section on watch pages.
 - Hides the Subscriptions feed page and its sidebar links.
+- Hides videos that are **obviously entertainment** in listings (mainly search
+  results), by matching their title/channel against a keyword list. This is a
+  heuristic — edit `ENTERTAINMENT_PATTERNS` in `content.js` to tune what counts.
 - Keeps YouTube's "Autoplay next" toggle **off** (one-shot per video, so it never
   disturbs scrolling or in-page navigation).
 

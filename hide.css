@@ -77,6 +77,11 @@ html[data-ytf-hide-subscriptions="1"] ytd-mini-guide-entry-renderer:has(a[href="
   display: none !important;
 }
 
+/* ---------- Entertainment videos (heuristic; tagged by content.js) ---------- */
+html[data-ytf-hide-entertainment="1"] [data-ytf-ent="1"] {
+  display: none !important;
+}
+
 /* ---------- Hover auto-preview thumbnails ---------- */
 html[data-ytf-block-autoplay="1"] ytd-video-preview,
 html[data-ytf-block-autoplay="1"] #video-preview {

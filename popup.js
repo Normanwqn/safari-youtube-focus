@@ -25,6 +25,7 @@
     "hideShorts",
     "hideComments",
     "hideSubscriptions",
+    "hideEntertainment",
     "blockAutoplay",
   ];
   const DEFAULTS = {
@@ -32,6 +33,7 @@
     hideShorts: true,
     hideComments: true,
     hideSubscriptions: true,
+    hideEntertainment: true,
     blockAutoplay: true,
   };
 
