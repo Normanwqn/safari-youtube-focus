@@ -84,8 +84,14 @@ resets every time Safari quits. To make it permanent:
   Macs.
 
 ## Notes
-- Icons: the artwork is an original hourglass-with-play-sand design (see
-  `icon.svg`; `icon-app.svg` is the margined macOS app-icon variant). It nods at
-  video/time but deliberately does **not** reproduce the trademarked YouTube
-  logo. Regenerate the PNGs with `rsvg-convert -w SIZE -h SIZE icon.svg -o icon-SIZE.png`.
+- Icons: the artwork is an original hourglass-with-play-sand design that
+  deliberately does **not** reproduce the trademarked YouTube logo.
+  - `icon.svg` — rounded-tile variant used for the web-extension icons
+    (Safari toolbar / Extensions pane, via `manifest.json`).
+  - `icon-tahoe.svg` — **full-bleed square** artwork for the macOS app icon,
+    per the macOS 26 (Tahoe) guidelines: no baked corners, margins, or
+    shadows — the system applies the squircle mask and Liquid Glass lighting.
+    For the fully layered treatment (specular/dark/tinted variants), open the
+    artwork in Apple's Icon Composer and export a `.icon` file.
+  - Regenerate PNGs with `rsvg-convert -w SIZE -h SIZE icon.svg -o icon-SIZE.png`.
 - The extension requests only `storage` permission and access to `*.youtube.com`.
