@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- macOS app-icon variant: same artwork as icon.svg, scaled onto a
+       transparent canvas with ~9% margin per Apple icon conventions. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E4342C"/>
+      <stop offset="1" stop-color="#A81810"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(92,92) scale(0.8203125)">
+    <rect x="0" y="0" width="1024" height="1024" rx="224" fill="url(#tile)"/>
+
+    <g fill="#FFFFFF">
+      <rect x="312" y="196" width="400" height="46" rx="23"/>
+      <rect x="312" y="782" width="400" height="46" rx="23"/>
+      <path d="M352,258 L672,258 L512,500 Z"/>
+      <path d="M352,766 L672,766 L512,524 Z"/>
+    </g>
+
+    <path d="M468,622 L468,714 L560,668 Z" fill="#B7201A"/>
+
+    <rect x="504" y="470" width="16" height="88" rx="8" fill="#FFFFFF"/>
+  </g>
+</svg>

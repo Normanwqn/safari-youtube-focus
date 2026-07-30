@@ -3,6 +3,14 @@
   "name": "YouTube Focus",
   "version": "1.0",
   "description": "Blocks the YouTube recommendation feed and stops autoplay.",
+  "icons": {
+    "48": "icon-48.png",
+    "64": "icon-64.png",
+    "96": "icon-96.png",
+    "128": "icon-128.png",
+    "256": "icon-256.png",
+    "512": "icon-512.png"
+  },
   "permissions": ["storage"],
   "host_permissions": ["*://*.youtube.com/*"],
   "content_scripts": [
@@ -16,7 +24,13 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "YouTube Focus"
+    "default_title": "YouTube Focus",
+    "default_icon": {
+      "48": "icon-48.png",
+      "64": "icon-64.png",
+      "96": "icon-96.png",
+      "128": "icon-128.png"
+    }
   },
   "browser_specific_settings": {
     "safari": {

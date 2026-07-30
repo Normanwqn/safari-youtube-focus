@@ -84,6 +84,8 @@ resets every time Safari quits. To make it permanent:
   Macs.
 
 ## Notes
-- No icons are bundled; Safari uses a default. Drop `icon-48.png` / `icon-128.png`
-  in this folder and add an `"icons"` block to `manifest.json` if you want custom art.
+- Icons: the artwork is an original hourglass-with-play-sand design (see
+  `icon.svg`; `icon-app.svg` is the margined macOS app-icon variant). It nods at
+  video/time but deliberately does **not** reproduce the trademarked YouTube
+  logo. Regenerate the PNGs with `rsvg-convert -w SIZE -h SIZE icon.svg -o icon-SIZE.png`.
 - The extension requests only `storage` permission and access to `*.youtube.com`.
