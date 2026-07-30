@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- macOS 26 (Tahoe) app-icon artwork: FULL-BLEED SQUARE, per the current
-       HIG. No rounded corners, no margin, no baked shadow — the system applies
-       the standard squircle mask and Liquid Glass lighting itself.
-       Same original hourglass/play-sand design as icon.svg (not the YouTube logo). -->
+  <!-- macOS 26 app-icon artwork, per the App Icons HIG (Liquid Glass era):
+       full-bleed SQUARE, unmasked — the system applies the rounded-corner mask
+       and lighting. Flat, no baked effects. Primary content (the play button)
+       sits dead center; shapes are filled/overlapping with rounded corners and
+       no thin strokes, as the HIG advises for small-size crispness.
+       Original design — not the trademarked YouTube logo. -->
   <defs>
     <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#E4342C"/>
@@ -13,19 +15,17 @@
   <!-- edge-to-edge background; corners get cropped by the system mask -->
   <rect x="0" y="0" width="1024" height="1024" fill="url(#tile)"/>
 
-  <g fill="#FFFFFF">
-    <!-- hourglass frame bars -->
-    <rect x="312" y="196" width="400" height="46" rx="23"/>
-    <rect x="312" y="782" width="400" height="46" rx="23"/>
-    <!-- top bulb (sand draining) -->
-    <path d="M352,258 L672,258 L512,500 Z"/>
-    <!-- bottom bulb (sand pile) -->
-    <path d="M352,766 L672,766 L512,524 Z"/>
+  <!-- hourglass: bars + two funnels flowing into a central circular hub.
+       fill+stroke with round joins rounds every sharp corner. -->
+  <g fill="#FFFFFF" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round">
+    <rect x="312" y="196" width="400" height="46" rx="23" stroke="none"/>
+    <rect x="312" y="782" width="400" height="46" rx="23" stroke="none"/>
+    <path d="M362,268 L662,268 L512,460 Z"/>
+    <path d="M362,756 L662,756 L512,564 Z"/>
+    <circle cx="512" cy="512" r="150" stroke="none"/>
   </g>
 
-  <!-- play-button cutout in the fallen sand -->
-  <path d="M468,622 L468,714 L560,668 Z" fill="#B7201A"/>
-
-  <!-- falling sand stream -->
-  <rect x="504" y="470" width="16" height="88" rx="8" fill="#FFFFFF"/>
+  <!-- play button, optically centered on the canvas center (512,512) -->
+  <path d="M475,447 L475,577 L585,512 Z"
+        fill="#B7201A" stroke="#B7201A" stroke-width="16" stroke-linejoin="round"/>
 </svg>

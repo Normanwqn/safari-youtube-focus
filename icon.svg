@@ -1,5 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- YouTube Focus icon: hourglass whose fallen sand forms a play button.
+  <!-- YouTube Focus web-extension icon (Safari toolbar / Extensions pane).
+       Same glyph as icon-tahoe.svg for cross-context consistency; this variant
+       bakes the rounded tile because web-extension icons get no system mask.
        Original design — deliberately NOT the (trademarked) YouTube logo. -->
   <defs>
     <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
@@ -8,22 +10,19 @@
     </linearGradient>
   </defs>
 
-  <!-- full-bleed rounded tile -->
+  <!-- rounded tile (baked: no system masking in web-extension contexts) -->
   <rect x="0" y="0" width="1024" height="1024" rx="224" fill="url(#tile)"/>
 
-  <g fill="#FFFFFF">
-    <!-- hourglass frame bars -->
-    <rect x="312" y="196" width="400" height="46" rx="23"/>
-    <rect x="312" y="782" width="400" height="46" rx="23"/>
-    <!-- top bulb (sand draining) -->
-    <path d="M352,258 L672,258 L512,500 Z"/>
-    <!-- bottom bulb (sand pile) -->
-    <path d="M352,766 L672,766 L512,524 Z"/>
+  <!-- hourglass: bars + two funnels flowing into a central circular hub -->
+  <g fill="#FFFFFF" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round">
+    <rect x="312" y="196" width="400" height="46" rx="23" stroke="none"/>
+    <rect x="312" y="782" width="400" height="46" rx="23" stroke="none"/>
+    <path d="M362,268 L662,268 L512,460 Z"/>
+    <path d="M362,756 L662,756 L512,564 Z"/>
+    <circle cx="512" cy="512" r="150" stroke="none"/>
   </g>
 
-  <!-- play-button cutout in the fallen sand (tile red, reads as a hole) -->
-  <path d="M468,622 L468,714 L560,668 Z" fill="#B7201A"/>
-
-  <!-- falling sand stream -->
-  <rect x="504" y="470" width="16" height="88" rx="8" fill="#FFFFFF"/>
+  <!-- play button, optically centered on the canvas center (512,512) -->
+  <path d="M475,447 L475,577 L585,512 Z"
+        fill="#B7201A" stroke="#B7201A" stroke-width="16" stroke-linejoin="round"/>
 </svg>
