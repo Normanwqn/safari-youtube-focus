@@ -84,10 +84,13 @@ resets every time Safari quits. To make it permanent:
   Macs.
 
 ## Notes
-- Icons: the artwork is an original illustration — a realistic hourglass
-  (graphite caps, translucent glass, red sand) on a neutral background with a
-  red play badge at its side. It deliberately does **not** reproduce the
-  trademarked YouTube logo.
+- Icons: the artwork is an original illustration in the Liquid Glass style —
+  a realistic hourglass (graphite caps, translucent glass with inner glows,
+  red sand) on a neutral background, with a smaller glassy play badge at the
+  lower left. The composition follows the golden ratio: the hourglass axis
+  sits on the right golden line (x=633/1024) and the badge on the lower-left
+  golden point (391,633), scaled down by φ. It deliberately does **not**
+  reproduce the trademarked YouTube logo.
   - `icon.svg` — rounded-tile variant used for the web-extension icons
     (Safari toolbar / Extensions pane, via `manifest.json`).
   - `icon-tahoe.svg` — **full-bleed square** artwork for the macOS app icon,
