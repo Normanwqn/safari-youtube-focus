@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="glassClip">
+      <path d="M277 238 C277 354 322 430 399 494 C402 497 402 523 399 526 C322 590 277 666 277 782 L563 782 C563 666 518 590 441 526 C438 523 438 497 441 494 C518 430 563 354 563 238 Z"/>
+    </clipPath>
+  </defs>
+  <g transform="translate(92,0)">
+    <g clip-path="url(#glassClip)">
+      <path d="M336 470 C372 448 398 442 412 450 C417 454 423 454 428 450 C442 442 468 448 504 470 L504 516 L336 516 Z" fill="#E0261B"/>
+      <rect x="411" y="502" width="18" height="188" rx="9" fill="#E0261B"/>
+      <path d="M284 788 C322 700 372 650 414 638 C418 636.5 422 636.5 426 638 C468 650 518 700 556 788 Z" fill="#E0261B"/>
+    </g>
+  </g>
+</svg>

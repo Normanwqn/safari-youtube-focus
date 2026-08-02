@@ -1,0 +1,74 @@
+{
+  "fill": {
+    "linear-gradient": [
+      "srgb:0.243,0.243,0.275,1.0",
+      "srgb:0.118,0.118,0.137,1.0"
+    ],
+    "orientation": {
+      "start": {
+        "x": 0.5,
+        "y": 0
+      },
+      "stop": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  },
+  "groups": [
+    {
+      "layers": [
+        {
+          "image-name": "badge.svg",
+          "name": "play-badge"
+        }
+      ],
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.25
+      },
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.4
+      }
+    },
+    {
+      "layers": [
+        {
+          "image-name": "frame.svg",
+          "name": "frame"
+        }
+      ],
+      "specular": true,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.35
+      }
+    },
+    {
+      "layers": [
+        {
+          "image-name": "sand.svg",
+          "name": "sand"
+        }
+      ]
+    },
+    {
+      "layers": [
+        {
+          "image-name": "glass.svg",
+          "name": "hourglass-glass"
+        }
+      ],
+      "translucency": {
+        "enabled": true,
+        "value": 0.35
+      },
+      "specular": true
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
+  }
+}

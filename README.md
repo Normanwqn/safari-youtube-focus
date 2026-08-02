@@ -84,13 +84,15 @@ resets every time Safari quits. To make it permanent:
   Macs.
 
 ## Notes
-- Icons: the artwork is an original illustration in the Liquid Glass style —
-  a frosted-glass hourglass (silver caps, translucent bulbs with inner glows,
-  red sand) on a dark neutral background for contrast, with a smaller glassy
-  play badge at the lower right. The composition follows the golden ratio:
-  the hourglass axis sits on the left golden line (x=391/1024) and the badge
-  on the lower-right golden point (633,633), scaled down by φ. It deliberately
-  does **not** reproduce the trademarked YouTube logo.
+- Icons: an original illustration built for real Liquid Glass. `AppIcon.icon`
+  is a hand-authored Icon Composer package: flat layers (glass / sand / frame /
+  play badge — `groups[0]` is frontmost) over a dark gradient fill, and the
+  system renders the actual glass materials (specular, frost, per-appearance
+  variants) at build time via actool. The hourglass is centered per the HIG;
+  the φ-scaled play badge tucks into its lower-right shoulder. `icon.svg` /
+  `icon-tahoe.svg` are flat composites for the web-extension icons and the
+  legacy appiconset fallback. The design deliberately does **not** reproduce
+  the trademarked YouTube logo.
   - `icon.svg` — rounded-tile variant used for the web-extension icons
     (Safari toolbar / Extensions pane, via `manifest.json`).
   - `icon-tahoe.svg` — **full-bleed square** artwork for the macOS app icon,

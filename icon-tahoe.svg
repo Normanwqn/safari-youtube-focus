@@ -1,77 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- macOS app-icon artwork, Liquid Glass styling emulated in flat layers
-       (gradients only, no filters — librsvg-safe; the system adds its own
-       dynamic lighting). DARK neutral background for contrast with the
-       frosted glass. Golden-ratio composition: hourglass axis on the LEFT
-       golden line (x=391); play badge on the lower-RIGHT golden point
-       (633,633), scaled down by phi (r=160/1.618≈99). Full-bleed square.
+  <!-- macOS app-icon artwork, per actual Liquid Glass principles: FLAT layers
+       with clearly defined edges and NO baked effects (no glints, glows,
+       rims, shadows) — the system supplies dynamic specular/refraction/
+       translucency itself. Composition: hourglass centered (x=512) per the
+       HIG's "keep primary content centered"; play badge tucked into its
+       lower-right shoulder at (690,688), r = 160/phi. Full-bleed square;
+       system applies the mask.
        Original illustration — not the trademarked YouTube logo. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#404048"/>
-      <stop offset="1" stop-color="#1D1D22"/>
+      <stop offset="0" stop-color="#3E3E46"/>
+      <stop offset="1" stop-color="#1E1E23"/>
     </linearGradient>
-    <radialGradient id="bgGlow" cx="0.5" cy="0.15" r="0.8">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#EDEDF1"/>
-      <stop offset="1" stop-color="#B9B9C2"/>
-    </linearGradient>
-    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.34"/>
-      <stop offset="0.5" stop-color="#DCE9F4" stop-opacity="0.16"/>
-      <stop offset="1" stop-color="#BFD4E6" stop-opacity="0.26"/>
-    </linearGradient>
-    <radialGradient id="bulbGlow" cx="0.35" cy="0.25" r="0.9">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.38"/>
-      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.08"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="sand" x1="0" y1="430" x2="0" y2="790" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F05A4F"/>
-      <stop offset="1" stop-color="#C42A21"/>
-    </linearGradient>
-    <radialGradient id="badgeGlass" cx="0.32" cy="0.28" r="1.05">
-      <stop offset="0" stop-color="#F76B60"/>
-      <stop offset="0.55" stop-color="#DC3A30"/>
-      <stop offset="1" stop-color="#A81810"/>
-    </radialGradient>
     <clipPath id="glassClip">
       <path d="M277 238 C277 354 322 430 399 494 C402 497 402 523 399 526 C322 590 277 666 277 782 L563 782 C563 666 518 590 441 526 C438 523 438 497 441 494 C518 430 563 354 563 238 Z"/>
     </clipPath>
   </defs>
 
   <rect x="0" y="0" width="1024" height="1024" fill="url(#bg)"/>
-  <rect x="0" y="0" width="1024" height="1024" fill="url(#bgGlow)"/>
 
-  <!-- hourglass, axis on the left golden line (local 420 -> 391) -->
-  <g transform="translate(-29,0)">
-    <path d="M277 238 C277 354 322 430 399 494 C402 497 402 523 399 526 C322 590 277 666 277 782 L563 782 C563 666 518 590 441 526 C438 523 438 497 441 494 C518 430 563 354 563 238 Z" fill="url(#glass)"/>
-    <path d="M277 238 C277 354 322 430 399 494 C402 497 402 523 399 526 C322 590 277 666 277 782 L563 782 C563 666 518 590 441 526 C438 523 438 497 441 494 C518 430 563 354 563 238 Z" fill="url(#bulbGlow)"/>
+  <!-- hourglass, centered (local 420 -> 512) -->
+  <g transform="translate(92,0)">
+    <!-- glass: one flat translucent shape, one clean outline -->
+    <path d="M277 238 C277 354 322 430 399 494 C402 497 402 523 399 526 C322 590 277 666 277 782 L563 782 C563 666 518 590 441 526 C438 523 438 497 441 494 C518 430 563 354 563 238 Z"
+          fill="#FFFFFF" fill-opacity="0.22"/>
 
+    <!-- sand: flat single red, clipped to the glass -->
     <g clip-path="url(#glassClip)">
-      <path d="M336 470 C372 448 398 442 412 450 C417 454 423 454 428 450 C442 442 468 448 504 470 L504 516 L336 516 Z" fill="url(#sand)"/>
-      <rect x="411" y="502" width="18" height="188" rx="9" fill="url(#sand)"/>
-      <path d="M284 788 C322 700 372 650 414 638 C418 636.5 422 636.5 426 638 C468 650 518 700 556 788 Z" fill="url(#sand)"/>
-      <path d="M284 788 C322 700 372 650 414 638 C418 636.5 422 636.5 426 638 C468 650 518 700 556 788 Z" fill="#FFFFFF" opacity="0.1"/>
+      <path d="M336 470 C372 448 398 442 412 450 C417 454 423 454 428 450 C442 442 468 448 504 470 L504 516 L336 516 Z" fill="#DC3A30"/>
+      <rect x="411" y="502" width="18" height="188" rx="9" fill="#DC3A30"/>
+      <path d="M284 788 C322 700 372 650 414 638 C418 636.5 422 636.5 426 638 C468 650 518 700 556 788 Z" fill="#DC3A30"/>
     </g>
 
-    <path d="M277 238 C277 354 322 430 399 494 C402 497 402 523 399 526 C322 590 277 666 277 782 L563 782 C563 666 518 590 441 526 C438 523 438 497 441 494 C518 430 563 354 563 238 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="14" stroke-linejoin="round"/>
+    <path d="M277 238 C277 354 322 430 399 494 C402 497 402 523 399 526 C322 590 277 666 277 782 L563 782 C563 666 518 590 441 526 C438 523 438 497 441 494 C518 430 563 354 563 238 Z"
+          fill="none" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="14" stroke-linejoin="round"/>
 
-    <path d="M320 296 C308 344 313 390 338 428" fill="none" stroke="#FFFFFF" stroke-opacity="0.8" stroke-width="22" stroke-linecap="round"/>
-    <path d="M314 706 C309 734 317 752 334 764" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="20" stroke-linecap="round"/>
-
-    <rect x="256" y="180" width="328" height="64" rx="30" fill="url(#cap)"/>
-    <rect x="272" y="191" width="296" height="16" rx="8" fill="#FFFFFF" opacity="0.75"/>
-    <rect x="256" y="776" width="328" height="64" rx="30" fill="url(#cap)"/>
-    <rect x="272" y="787" width="296" height="16" rx="8" fill="#FFFFFF" opacity="0.75"/>
+    <!-- caps: flat light gray, no highlight bands -->
+    <rect x="256" y="180" width="328" height="64" rx="30" fill="#E2E2E7"/>
+    <rect x="256" y="776" width="328" height="64" rx="30" fill="#E2E2E7"/>
   </g>
 
-  <!-- play badge on the lower-right golden point, scaled down by phi -->
-  <circle cx="633" cy="633" r="100" fill="url(#badgeGlass)"/>
-  <circle cx="633" cy="633" r="100" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="14"/>
-  <path d="M688 633 L610 588 L610 678 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="24" stroke-linejoin="round"/>
-  <path d="M582 585 C590 566 608 552 628 549" fill="none" stroke="#FFFFFF" stroke-opacity="0.65" stroke-width="16" stroke-linecap="round"/>
+  <!-- play badge: flat red circle + flat white triangle, no ring, no glint -->
+  <circle cx="690" cy="688" r="100" fill="#DC3A30"/>
+  <path d="M745 688 L667 643 L667 733 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="24" stroke-linejoin="round"/>
 </svg>
