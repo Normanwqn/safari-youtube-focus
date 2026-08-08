@@ -20,6 +20,8 @@
         align-items: center;
         justify-content: space-between;
         padding: 8px 0;
+        /* rgba fallback first: color-mix needs Safari 16.2+, floor is 16.0 */
+        border-top: 1px solid rgba(128, 128, 128, 0.25);
         border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
       }
       .row:first-of-type { border-top: none; }
@@ -28,6 +30,7 @@
         font-size: 11px;
         padding: 2px 8px;
         border-radius: 10px;
+        background: rgba(128, 128, 128, 0.15);
         background: color-mix(in srgb, currentColor 10%, transparent);
         opacity: 0.7;
       }
@@ -76,7 +79,7 @@
       <input type="checkbox" id="blockAutoplay" />
     </div>
 
-    <p class="hint">Changes apply instantly and sync across your devices via iCloud.</p>
+    <p class="hint">Changes apply instantly to open YouTube tabs. Settings are stored on this Mac.</p>
 
     <script src="popup.js"></script>
   </body>

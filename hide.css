@@ -56,9 +56,11 @@ html[data-ytf-hide-comments="1"] ytd-item-section-renderer#comments {
 }
 
 /* ---------- Subscriptions (feed page + sidebar links) ---------- */
-/* Blank the Subscriptions feed page grid, like the home feed */
+/* Blank the Subscriptions feed page grid, like the home feed. The generic
+   #primary #contents fallback guards against YouTube renaming the container. */
 html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer,
-html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #contents.ytd-section-list-renderer {
+html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #contents.ytd-section-list-renderer,
+html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #primary #contents {
   display: none !important;
 }
 html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #primary::before {

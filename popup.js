@@ -1,7 +1,7 @@
 /* YouTube Focus — popup logic. Reads/writes the same storage keys the content
-   script watches, so toggling updates open tabs live. Uses storage.sync (Safari
-   backs it with iCloud) so settings follow you across devices; falls back to
-   storage.local when sync isn't available.
+   script watches, so toggling updates open tabs live. Uses storage.sync with a
+   storage.local fallback; note Safari implements storage.sync as per-device
+   storage (no iCloud syncing), so settings are local to this Mac either way.
 
    Note: the home feed has no toggle here — it is always hidden by design. */
 

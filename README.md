@@ -11,14 +11,15 @@ Blocks the YouTube recommendation feed and stops autoplay.
 - Hides the Subscriptions feed page and its sidebar links.
 - Hides videos that are **obviously entertainment** in listings (mainly search
   results), by matching their title/channel against a keyword list. This is a
-  heuristic — edit `ENTERTAINMENT_PATTERNS` in `content.js` to tune what counts.
+  heuristic and the keywords are **English-first** (an allow-list of study terms,
+  including some non-English ones, rescues educational videos) — edit
+  `ENTERTAINMENT_PATTERNS` / `ALLOW_PATTERNS` in `content.js` to tune what counts.
 - Keeps YouTube's "Autoplay next" toggle **off** (one-shot per video, so it never
   disturbs scrolling or in-page navigation).
 
 Every feature except the home feed can be toggled from the toolbar popup. Changes
-apply live to open tabs and **sync across your devices via iCloud** (`storage.sync`),
-so the same settings apply on every Mac signed into your Apple ID with the
-extension enabled.
+apply live to open tabs. Settings are stored per device (Safari implements
+`storage.sync` as local storage — it does not sync via iCloud).
 
 ## Files
 
@@ -34,11 +35,19 @@ extension enabled.
 Safari only loads web extensions that are bundled inside an app, so you wrap
 this folder with Apple's converter (requires **Xcode**, free from the App Store).
 
+> **Canonical wrapper project:** the maintained Xcode project lives in a sibling
+> folder, `../YouTubeFocus-App/YouTube Focus/` (not in this repo). Its extension
+> resources are *file references into this repo*, so edits here are picked up on
+> the next build — but the project also carries hand-wired pieces this recipe
+> can't reproduce (the Liquid Glass `AppIcon.icon` reference, fixed bundle IDs,
+> App Store Info.plist keys). Prefer building that project; use the converter
+> recipe below only when starting from scratch.
+
 1. Clone this repo and run the converter against the folder:
 
    ```sh
    git clone https://github.com/Normanwqn/safari-youtube-focus.git
-   cd youtube-focus
+   cd safari-youtube-focus
    xcrun safari-web-extension-converter . \
      --app-name "YouTube Focus" \
      --bundle-identifier com.yourname.youtubefocus
@@ -82,6 +91,30 @@ resets every time Safari quits. To make it permanent:
   Program** ($99/yr) to get a *Developer ID Application* certificate, then sign
   and **notarize** the app. Without notarization, Gatekeeper blocks it on other
   Macs.
+- **Mac App Store:** also requires the Apple Developer Program. In the wrapper
+  project, set your **Team** on both targets (Signing & Capabilities), then
+  **Product → Archive → Distribute App → App Store Connect**. The project
+  already carries the MAS prerequisites (App Sandbox on both targets,
+  `LSApplicationCategoryType`, export-compliance key, aligned deployment
+  targets). Before submitting, rename the user-facing product — leading with
+  the "YouTube" trademark risks rejection under App Review Guideline 5.2.1 /
+  4.1(c); the "… for YouTube" pattern is the tolerated form. Fill in the App
+  Privacy label as **Data Not Collected** (the extension stores settings
+  locally and collects nothing).
+
+## Tests
+
+The entertainment classifier (the riskiest logic) has a zero-dependency test
+suite. It extracts the pattern arrays from `content.js` and table-drives
+block/keep cases:
+
+```sh
+node --test tests/*.test.mjs
+```
+
+Requires Node 18+ (the bare `tests/` directory form broke in Node 21 — use the
+glob). CI runs the same command on every push to main and on pull requests
+(`.github/workflows/test.yml`).
 
 ## Notes
 - Icons: an original illustration built for real Liquid Glass. `AppIcon.icon`
@@ -100,5 +133,9 @@ resets every time Safari quits. To make it permanent:
     shadows — the system applies the squircle mask and Liquid Glass lighting.
     For the fully layered treatment (specular/dark/tinted variants), open the
     artwork in Apple's Icon Composer and export a `.icon` file.
-  - Regenerate PNGs with `rsvg-convert -w SIZE -h SIZE icon.svg -o icon-SIZE.png`.
+  - Regenerate the extension PNGs with
+    `rsvg-convert -w SIZE -h SIZE icon.svg -o icon-SIZE.png`, and the wrapper
+    project's appiconset fallback with
+    `rsvg-convert -w PX -h PX icon-tahoe.svg -o mac-icon-SIZE@SCALE.png`
+    (16/32/128/256/512 at 1x/2x).
 - The extension requests only `storage` permission and access to `*.youtube.com`.

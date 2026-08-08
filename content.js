@@ -16,9 +16,10 @@
 
   const api = typeof browser !== "undefined" ? browser : chrome;
 
-  // Prefer storage.sync — Safari backs it with iCloud, so settings follow the
-  // user across every device signed into the same Apple ID. Fall back to local
-  // if sync isn't available (older Safari, or iCloud disabled).
+  // Prefer storage.sync with a storage.local fallback. Note: Safari implements
+  // storage.sync as plain per-device storage — it does NOT sync via iCloud
+  // (Apple: "Storage mechanism implemented, but syncing not supported"), so
+  // settings are per-device either way. sync is kept for cross-browser parity.
   function getStore() {
     try {
       if (api.storage && api.storage.sync) return api.storage.sync;
@@ -45,8 +46,8 @@
   /* ---------------- settings -> <html> data attributes ---------------- */
 
   // Cheap and click-free: only flips the CSS gate attributes on <html>.
-  // Autoplay (which clicks player controls) is handled separately by
-  // disableAutoplayOnce(), as a one-shot per video on watch pages.
+  // Called from init, storage load, onChanged, and navigation — NOT from the
+  // MutationObserver (settings can't change from DOM mutations).
   function applySettings() {
     const root = document.documentElement;
     root.setAttribute("data-ytf-hide-home", "1"); // always on, not configurable
@@ -63,22 +64,31 @@
       store.get(DEFAULTS, (stored) => {
         if (stored) settings = { ...DEFAULTS, ...stored };
         applySettings();
+        filterEntertainment();
       });
     } catch (e) {
       applySettings(); // storage unavailable — fall back to defaults
     }
   }
 
-  // React live to popup toggles (and to changes synced from other devices).
-  // We only ever write to one store, so applying on any area is safe.
+  // React live to popup toggles. Both scripts write to a single store, so no
+  // area filtering is needed; skip removed keys (undefined newValue).
   try {
     api.storage.onChanged.addListener((changes) => {
       for (const key of Object.keys(changes)) {
-        if (key in settings) settings[key] = changes[key].newValue;
+        if (key in settings && changes[key].newValue !== undefined) {
+          settings[key] = changes[key].newValue;
+        }
       }
       applySettings();
-      // If autoplay-blocking was just turned on, re-run the one-shot.
-      if (settings.blockAutoplay) {
+      // Re-run the autoplay one-shot only when blocking was just turned ON —
+      // unrelated toggles must not override an autoplay choice the user made
+      // on the page since our initial one-shot.
+      if (
+        "blockAutoplay" in changes &&
+        changes.blockAutoplay.newValue === true &&
+        changes.blockAutoplay.oldValue !== true
+      ) {
         autoplayHandled = false;
         scheduleAutoplayDisable();
       }
@@ -136,14 +146,15 @@
    * Heuristic, keyword-based: hide videos in listings (mainly search results)
    * whose title/channel obviously signal entertainment. This only reads text
    * and TAGS the item with data-ytf-ent; hide.css does the hiding. No clicks,
-   * so it never disturbs scroll or focus. Tune the list below to taste — it is
-   * deliberately conservative ("obviously" entertainment) to limit false hits.
+   * so it never disturbs scroll or focus. The keyword lists are English-first
+   * (see README); tune them to taste — the bias is deliberately conservative
+   * ("obviously" entertainment) to limit false hits.
    */
 
   const ENTERTAINMENT_PATTERNS = [
     // reactions / pranks / drama
     // (note: "react … to", not bare "react" — avoids the React JS framework)
-    "reaction", "react(s|ing)? to", "prank", "gone wrong",
+    "reaction", "react(s|ing|ed)? to", "prank", "gone wrong",
     "caught on camera", "exposed", "\\bdrama\\b", "responds? to", "clap ?back",
     // vlogs / lifestyle
     "\\bvlog", "day in (my|the) life", "story ?time", "grwm",
@@ -170,27 +181,41 @@
 
   // Veto list: if a title looks educational/technical, keep it even when an
   // entertainment keyword also matched (e.g. "coding challenge", "math
-  // olympiad", "highlights of the lecture"). Bias is toward keeping.
+  // olympiad", "highlights of the lecture"). Bias is toward keeping. Includes
+  // common non-English study terms so language-independent brand keywords
+  // (minecraft, gta, ...) can't hide foreign-language tutorials unopposed.
   const ALLOW_PATTERNS = [
     "tutorial", "lecture", "\\bcourse\\b", "explained", "how to",
     "documentation", "\\bapi\\b", "leetcode", "algorithm", "\\bmath\\b",
     "physics", "chemistry", "biology", "interview", "coding", "programming",
     "kaggle", "proof", "theorem", "lesson", "\\bexam\\b",
+    // non-English study terms
+    "curso", "tutoriel", "\\bcours\\b", "anleitung", "講座", "강좌", "урок",
   ];
   const ALLOW_RE = new RegExp("(" + ALLOW_PATTERNS.join("|") + ")", "i");
 
-  const VIDEO_ITEM_SELECTOR = [
+  // Legacy Polymer renderers plus the newer bare lockup view-model that
+  // YouTube is migrating listings to (related sidebar, newer search results).
+  const LEGACY_ITEM_SELECTOR = [
     "ytd-video-renderer",
     "ytd-rich-item-renderer",
     "ytd-grid-video-renderer",
     "ytd-compact-video-renderer",
     "ytd-playlist-video-renderer",
   ].join(",");
+  const VIDEO_ITEM_SELECTOR = LEGACY_ITEM_SELECTOR + ",yt-lockup-view-model";
 
   function itemText(el) {
-    const title = el.querySelector(
-      "#video-title, #video-title-link, .yt-lockup-metadata-view-model__title"
-    );
+    // Specific selectors first; the generic h3 fallback ONLY when they miss
+    // (bare lockups). A combined list would let the h3 — an ANCESTOR of
+    // #video-title in legacy renderers — shadow the clean title attribute
+    // and pull badge text (LIVE/New) into the classification input.
+    const title =
+      el.querySelector(
+        "#video-title, #video-title-link, .yt-lockup-metadata-view-model__title"
+      ) ||
+      el.querySelector("h3 a") ||
+      el.querySelector("h3");
     const channel = el.querySelector(
       "#channel-name, ytd-channel-name, .yt-content-metadata-view-model-wiz__metadata-text"
     );
@@ -200,40 +225,66 @@
     return (titleText + " " + channelText).trim();
   }
 
-  // Tag not-yet-scanned video items as entertainment ("1") or not ("0").
-  // Items whose text hasn't rendered yet are left unmarked so a later pass
-  // retries them.
+  // Classify one item as entertainment ("1") or not ("0"). The classified
+  // text is stored in data-ytf-key so an item whose content changes (SPA
+  // rebinds, late-rendering text) is re-classified instead of keeping a stale
+  // verdict. Items with no text yet are left unmarked for a later retry.
+  function classifyItem(el) {
+    // A lockup nested inside a legacy renderer is handled by its ancestor.
+    if (el.tagName === "YT-LOCKUP-VIEW-MODEL" && el.parentElement && el.parentElement.closest(LEGACY_ITEM_SELECTOR)) {
+      return;
+    }
+    const text = itemText(el);
+    if (!text) return; // not populated yet — retry next pass
+    if (el.getAttribute("data-ytf-key") === text) return; // verdict still valid
+    const isEntertainment = ENT_RE.test(text) && !ALLOW_RE.test(text);
+    el.setAttribute("data-ytf-key", text);
+    el.setAttribute("data-ytf-ent", isEntertainment ? "1" : "0");
+  }
+
+  // Full-page pass: used on load/toggle/navigation, NOT on every mutation.
   function filterEntertainment() {
     if (!settings.hideEntertainment) return;
-    const items = document.querySelectorAll(
-      VIDEO_ITEM_SELECTOR + ":not([data-ytf-ent])"
-    );
-    items.forEach((el) => {
-      const text = itemText(el);
-      if (!text) return; // not populated yet — retry next pass
-      const isEntertainment = ENT_RE.test(text) && !ALLOW_RE.test(text);
-      el.setAttribute("data-ytf-ent", isEntertainment ? "1" : "0");
-    });
+    document.querySelectorAll(VIDEO_ITEM_SELECTOR).forEach(classifyItem);
   }
 
   /* ---------------- run + re-run on SPA navigation ---------------- */
 
-  // Cheap, no clicks, no focus changes — safe to run on every mutation.
-  function applyHiding() {
-    applySettings();
-    filterEntertainment();
-  }
-
-  // The observer ONLY flips CSS attributes. It never clicks anything, so it
-  // can fire as often as YouTube mutates the DOM without disturbing scroll
-  // position or focus.
+  // The observer only re-runs the (click-free) entertainment tagger, and only
+  // on the items its MutationRecords actually touched — a full-page rescan on
+  // every mutation batch would re-extract text from hundreds of items per
+  // frame while scrolling. Settings attributes are applied on load/change/
+  // navigation, never from mutations.
+  const pendingItems = new Set();
   let scheduled = false;
-  const observer = new MutationObserver(() => {
-    if (scheduled) return;
+  const observer = new MutationObserver((records) => {
+    if (!settings.hideEntertainment) return;
+    for (const record of records) {
+      const host =
+        record.target.nodeType === 1
+          ? record.target.closest(VIDEO_ITEM_SELECTOR)
+          : null;
+      if (host) pendingItems.add(host);
+      for (const node of record.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (node.matches(VIDEO_ITEM_SELECTOR)) pendingItems.add(node);
+        node
+          .querySelectorAll(VIDEO_ITEM_SELECTOR)
+          .forEach((el) => pendingItems.add(el));
+      }
+    }
+    if (!pendingItems.size || scheduled) return;
     scheduled = true;
     requestAnimationFrame(() => {
       scheduled = false;
-      applyHiding();
+      if (!settings.hideEntertainment) {
+        pendingItems.clear();
+        return;
+      }
+      pendingItems.forEach((el) => {
+        if (el.isConnected) classifyItem(el);
+      });
+      pendingItems.clear();
     });
   });
 
@@ -254,16 +305,32 @@
 
   // YouTube fires this when it finishes an in-app navigation.
   function onNavigate() {
-    applyHiding();
-    const key = onWatchPage() ? location.search : ""; // ?v=... identifies the video
+    applySettings();
+    filterEntertainment();
+    // Key the autoplay one-shot on the video id only — timestamp/playlist/share
+    // params also change location.search but are the SAME video, and must not
+    // re-arm the toggle click (it moves focus and scrolls the player into view).
+    let key = "";
+    if (onWatchPage()) {
+      try {
+        key = new URLSearchParams(location.search).get("v") || "";
+      } catch (e) {
+        key = location.search;
+      }
+    }
     if (key !== lastWatchKey) {
       lastWatchKey = key;
       autoplayHandled = false; // new video — allow one autoplay-off again
     }
     scheduleAutoplayDisable();
   }
-  window.addEventListener("yt-navigate-finish", onNavigate, true);
+  // Single registration: the event's capture phase passes through document,
+  // so a window listener would just run everything twice.
   document.addEventListener("yt-navigate-finish", onNavigate, true);
+
+  // Apply the (all-hidden) defaults synchronously at document_start so the
+  // feed can never flash in while the async storage read is in flight.
+  applySettings();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
