@@ -36,7 +36,7 @@ Safari only loads web extensions that are bundled inside an app, so you wrap
 this folder with Apple's converter (requires **Xcode**, free from the App Store).
 
 > **Canonical wrapper project:** the maintained Xcode project lives in a sibling
-> folder, `../YouTubeFocus-App/YouTube Focus/` (not in this repo). Its extension
+> folder, `../TubeFocus-App/TubeFocus/` (not in this repo). Its extension
 > resources are *file references into this repo*, so edits here are picked up on
 > the next build — but the project also carries hand-wired pieces this recipe
 > can't reproduce (the Liquid Glass `AppIcon.icon` reference, fixed bundle IDs,
