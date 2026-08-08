@@ -1,4 +1,4 @@
-# YouTube Focus — Safari extension
+# TubeFocus — a Safari extension for YouTube
 
 Blocks the YouTube recommendation feed and stops autoplay.
 
@@ -49,7 +49,7 @@ this folder with Apple's converter (requires **Xcode**, free from the App Store)
    git clone https://github.com/Normanwqn/safari-youtube-focus.git
    cd safari-youtube-focus
    xcrun safari-web-extension-converter . \
-     --app-name "YouTube Focus" \
+     --app-name "TubeFocus" \
      --bundle-identifier com.yourname.youtubefocus
    ```
 
@@ -61,7 +61,7 @@ this folder with Apple's converter (requires **Xcode**, free from the App Store)
    Then **Settings → Developer →** check *Allow unsigned extensions*
    (you'll re-check this after each Safari restart while developing).
 
-4. **Settings → Extensions →** enable **YouTube Focus** and, when prompted,
+4. **Settings → Extensions →** enable **TubeFocus** and, when prompted,
    **Allow** it on youtube.com (set "Always Allow on Every Website" or just YouTube).
 
 5. Open YouTube. The home feed, related sidebar, and autoplay are now blocked.
