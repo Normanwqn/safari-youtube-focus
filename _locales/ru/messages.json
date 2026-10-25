@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "Блокирует ленту рекомендаций YouTube и отключает автовоспроизведение."
+  },
+  "homeFeed": {
+    "message": "Главная лента"
+  },
+  "alwaysHidden": {
+    "message": "Всегда скрыта"
+  },
+  "hideRelated": {
+    "message": "Скрывать похожие видео и конечные заставки"
+  },
+  "hideShorts": {
+    "message": "Скрывать Shorts"
+  },
+  "hideComments": {
+    "message": "Скрывать комментарии"
+  },
+  "hideSubscriptions": {
+    "message": "Скрывать подписки"
+  },
+  "hideEntertainment": {
+    "message": "Скрывать развлекательные видео"
+  },
+  "blockAutoplay": {
+    "message": "Блокировать автовоспроизведение"
+  },
+  "hint": {
+    "message": "Изменения сразу применяются к открытым вкладкам YouTube. Настройки хранятся на этом устройстве."
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — рекомендации скрыты. Используйте поиск, чтобы найти нужное видео."
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — лента подписок скрыта."
+  }
+}

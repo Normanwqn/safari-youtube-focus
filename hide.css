@@ -11,7 +11,8 @@ html[data-ytf-hide-home="1"] ytd-browse[page-subtype="home"] #primary > ytd-rich
 
 /* Friendly placeholder so the home page isn't just blank */
 html[data-ytf-hide-home="1"] ytd-browse[page-subtype="home"] #primary::before {
-  content: "YouTube Focus — recommendations hidden. Use search to find what you came for.";
+  /* content.js sets --ytf-ph-home to a localized string via browser.i18n */
+  content: var(--ytf-ph-home, "TubeFocus — recommendations hidden. Use search to find what you came for.");
   display: block;
   margin: 80px auto;
   max-width: 480px;
@@ -64,7 +65,7 @@ html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #
   display: none !important;
 }
 html[data-ytf-hide-subscriptions="1"] ytd-browse[page-subtype="subscriptions"] #primary::before {
-  content: "YouTube Focus — subscriptions feed hidden.";
+  content: var(--ytf-ph-subs, "TubeFocus — subscriptions feed hidden.");
   display: block;
   margin: 80px auto;
   max-width: 480px;

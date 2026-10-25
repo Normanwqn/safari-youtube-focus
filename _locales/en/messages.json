@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "Blocks the YouTube recommendation feed and stops autoplay."
+  },
+  "homeFeed": {
+    "message": "Home feed"
+  },
+  "alwaysHidden": {
+    "message": "Always hidden"
+  },
+  "hideRelated": {
+    "message": "Hide related / end-screen"
+  },
+  "hideShorts": {
+    "message": "Hide Shorts"
+  },
+  "hideComments": {
+    "message": "Hide comments"
+  },
+  "hideSubscriptions": {
+    "message": "Hide subscriptions"
+  },
+  "hideEntertainment": {
+    "message": "Hide entertainment videos"
+  },
+  "blockAutoplay": {
+    "message": "Block autoplay"
+  },
+  "hint": {
+    "message": "Changes apply instantly to open YouTube tabs. Settings are stored on this device."
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — recommendations hidden. Use search to find what you came for."
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — subscriptions feed hidden."
+  }
+}

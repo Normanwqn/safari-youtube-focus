@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "Blockiert den YouTube-Empfehlungsfeed und stoppt die automatische Wiedergabe."
+  },
+  "homeFeed": {
+    "message": "Startseite"
+  },
+  "alwaysHidden": {
+    "message": "Immer ausgeblendet"
+  },
+  "hideRelated": {
+    "message": "Ähnliche Videos & Endbildschirm ausblenden"
+  },
+  "hideShorts": {
+    "message": "Shorts ausblenden"
+  },
+  "hideComments": {
+    "message": "Kommentare ausblenden"
+  },
+  "hideSubscriptions": {
+    "message": "Abos ausblenden"
+  },
+  "hideEntertainment": {
+    "message": "Unterhaltungsvideos ausblenden"
+  },
+  "blockAutoplay": {
+    "message": "Autoplay blockieren"
+  },
+  "hint": {
+    "message": "Änderungen gelten sofort für offene YouTube-Tabs. Einstellungen werden auf diesem Gerät gespeichert."
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — Empfehlungen ausgeblendet. Nutze die Suche, um zu finden, weshalb du gekommen bist."
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — Abo-Feed ausgeblendet."
+  }
+}

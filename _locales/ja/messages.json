@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "YouTube のおすすめフィードをブロックし、自動再生を停止します。"
+  },
+  "homeFeed": {
+    "message": "ホームフィード"
+  },
+  "alwaysHidden": {
+    "message": "常に非表示"
+  },
+  "hideRelated": {
+    "message": "関連動画・終了画面を非表示"
+  },
+  "hideShorts": {
+    "message": "ショートを非表示"
+  },
+  "hideComments": {
+    "message": "コメントを非表示"
+  },
+  "hideSubscriptions": {
+    "message": "登録チャンネルを非表示"
+  },
+  "hideEntertainment": {
+    "message": "エンタメ動画を非表示"
+  },
+  "blockAutoplay": {
+    "message": "自動再生をブロック"
+  },
+  "hint": {
+    "message": "変更は開いている YouTube タブに即座に反映されます。設定はこのデバイスに保存されます。"
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — おすすめを非表示にしました。検索で目的の動画を探してください。"
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — 登録チャンネルのフィードを非表示にしました。"
+  }
+}

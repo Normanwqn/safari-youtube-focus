@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "屏蔽 YouTube 推荐信息流并停止自动播放。"
+  },
+  "homeFeed": {
+    "message": "首页信息流"
+  },
+  "alwaysHidden": {
+    "message": "始终隐藏"
+  },
+  "hideRelated": {
+    "message": "隐藏相关视频和结束画面"
+  },
+  "hideShorts": {
+    "message": "隐藏 Shorts"
+  },
+  "hideComments": {
+    "message": "隐藏评论"
+  },
+  "hideSubscriptions": {
+    "message": "隐藏订阅"
+  },
+  "hideEntertainment": {
+    "message": "隐藏娱乐视频"
+  },
+  "blockAutoplay": {
+    "message": "阻止自动播放"
+  },
+  "hint": {
+    "message": "更改会立即应用到已打开的 YouTube 标签页。设置保存在本设备上。"
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — 已隐藏推荐内容。请使用搜索找到你要看的视频。"
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — 已隐藏订阅信息流。"
+  }
+}

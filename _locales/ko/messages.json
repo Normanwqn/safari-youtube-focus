@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "YouTube 추천 피드를 차단하고 자동재생을 중지합니다."
+  },
+  "homeFeed": {
+    "message": "홈 피드"
+  },
+  "alwaysHidden": {
+    "message": "항상 숨김"
+  },
+  "hideRelated": {
+    "message": "관련 동영상·최종 화면 숨기기"
+  },
+  "hideShorts": {
+    "message": "Shorts 숨기기"
+  },
+  "hideComments": {
+    "message": "댓글 숨기기"
+  },
+  "hideSubscriptions": {
+    "message": "구독 숨기기"
+  },
+  "hideEntertainment": {
+    "message": "엔터테인먼트 동영상 숨기기"
+  },
+  "blockAutoplay": {
+    "message": "자동재생 차단"
+  },
+  "hint": {
+    "message": "변경 사항은 열려 있는 YouTube 탭에 즉시 적용됩니다. 설정은 이 기기에 저장됩니다."
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — 추천이 숨겨졌습니다. 검색으로 원하는 동영상을 찾아보세요."
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — 구독 피드가 숨겨졌습니다."
+  }
+}

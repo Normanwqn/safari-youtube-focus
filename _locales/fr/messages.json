@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "Bloque le fil de recommandations YouTube et désactive la lecture automatique."
+  },
+  "homeFeed": {
+    "message": "Page d'accueil"
+  },
+  "alwaysHidden": {
+    "message": "Toujours masquée"
+  },
+  "hideRelated": {
+    "message": "Masquer les vidéos suggérées et l'écran de fin"
+  },
+  "hideShorts": {
+    "message": "Masquer les Shorts"
+  },
+  "hideComments": {
+    "message": "Masquer les commentaires"
+  },
+  "hideSubscriptions": {
+    "message": "Masquer les abonnements"
+  },
+  "hideEntertainment": {
+    "message": "Masquer les vidéos de divertissement"
+  },
+  "blockAutoplay": {
+    "message": "Bloquer la lecture automatique"
+  },
+  "hint": {
+    "message": "Les changements s'appliquent immédiatement aux onglets YouTube ouverts. Les réglages sont enregistrés sur cet appareil."
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — recommandations masquées. Utilisez la recherche pour trouver ce que vous êtes venu voir."
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — fil des abonnements masqué."
+  }
+}

@@ -176,6 +176,31 @@
     "official trailer", "\\bteaser\\b", "movie clip",
     // shopping / food entertainment
     "unboxing", "\\bhaul\\b", "mukbang", "\\basmr\\b", "oddly satisfying",
+    // ---- non-English (NOTE: \b is ASCII-only in JS regexes, so non-Latin
+    // terms are plain substrings — pick distinctive words, never short stems)
+    // Spanish
+    "reacci", "\\bbromas?\\b", "video oficial", "videoclip",
+    "recopilación", "divertid", "24 horas",
+    // Portuguese
+    "reagindo a", "reação", "pegadinhas?", "melhores momentos",
+    "clipe oficial", "desafio",
+    // French
+    "je réagis", "réaction", "\\bblagues?\\b", "meilleurs moments",
+    "clip officiel",
+    // German
+    "reagiert auf", "reaktion", "\\bstreiche?\\b", "\\blustige?s?\\b",
+    "beste momente",
+    // Japanese
+    "実況", "ってみた", "ドッキリ", "面白", "ミュージックビデオ", "切り抜き",
+    // Korean
+    "먹방", "몰카", "리액션", "브이로그", "예능", "웃긴", "하이라이트",
+    // Chinese (simplified + traditional where they differ)
+    "搞笑", "恶搞", "整蛊", "吃播", "开箱", "集锦", "挑战", "实况", "混剪",
+    // Russian
+    "реакция", "пранк", "влог", "приколы", "нарезка", "челлендж",
+    "летсплей", "прохождение", "смешн",
+    // Arabic
+    "مقلب", "تحدي", "مضحك", "ردة فعل",
   ];
   const ENT_RE = new RegExp("(" + ENTERTAINMENT_PATTERNS.join("|") + ")", "i");
 
@@ -189,8 +214,29 @@
     "documentation", "\\bapi\\b", "leetcode", "algorithm", "\\bmath\\b",
     "physics", "chemistry", "biology", "interview", "coding", "programming",
     "kaggle", "proof", "theorem", "lesson", "\\bexam\\b",
-    // non-English study terms
-    "curso", "tutoriel", "\\bcours\\b", "anleitung", "講座", "강좌", "урок",
+    // ---- non-English study terms (same substring rules as above)
+    // Spanish
+    "curso", "aprende", "explicado", "lección", "programación",
+    "matemáticas", "química", "c[oó]mo (hacer|funciona)",
+    // Portuguese
+    "\\baula\\b", "como fazer", "programação", "explicação",
+    // French
+    "tutoriel", "\\bcours\\b", "apprendre", "leçon", "expliqué",
+    "formation", "programmation", "chimi",
+    // German
+    "anleitung", "lernen", "erklärt", "vorlesung", "grundlagen",
+    "programmieren", "chemie",
+    // Japanese
+    "講座", "解説", "入門", "勉強", "授業", "チュートリアル",
+    // Korean
+    "강좌", "강의", "공부", "설명", "배우기",
+    // Chinese (simplified + traditional where they differ)
+    "教程", "教学", "课程", "講解", "讲解", "入门", "学习", "编程",
+    // Russian
+    "урок", "обучение", "лекция", "объяснение", "как сделать",
+    "программирование", "химия",
+    // Arabic
+    "شرح", "تعلم", "دورة", "برمجة",
   ];
   const ALLOW_RE = new RegExp("(" + ALLOW_PATTERNS.join("|") + ")", "i");
 
@@ -327,6 +373,21 @@
   // Single registration: the event's capture phase passes through document,
   // so a window listener would just run everything twice.
   document.addEventListener("yt-navigate-finish", onNavigate, true);
+
+  // Localize the CSS ::before placeholder texts (hide.css reads these custom
+  // properties, falling back to English when they are unset).
+  try {
+    if (api.i18n && api.i18n.getMessage) {
+      const home = api.i18n.getMessage("placeholderHome");
+      const subs = api.i18n.getMessage("placeholderSubs");
+      const root = document.documentElement;
+      // JSON.stringify yields a double-quoted, escaped CSS string value.
+      if (home) root.style.setProperty("--ytf-ph-home", JSON.stringify(home));
+      if (subs) root.style.setProperty("--ytf-ph-subs", JSON.stringify(subs));
+    }
+  } catch (e) {
+    /* ignore — CSS falls back to English */
+  }
 
   // Apply the (all-hidden) defaults synchronously at document_start so the
   // feed can never flash in while the async storage read is in flight.

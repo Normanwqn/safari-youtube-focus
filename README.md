@@ -11,8 +11,9 @@ Blocks the YouTube recommendation feed and stops autoplay.
 - Hides the Subscriptions feed page and its sidebar links.
 - Hides videos that are **obviously entertainment** in listings (mainly search
   results), by matching their title/channel against a keyword list. This is a
-  heuristic and the keywords are **English-first** (an allow-list of study terms,
-  including some non-English ones, rescues educational videos) — edit
+  heuristic with keywords in **ten languages** (English, Spanish, Portuguese,
+  French, German, Japanese, Korean, Chinese, Russian, Arabic), and an allow-list
+  of study terms in the same languages rescues educational videos — edit
   `ENTERTAINMENT_PATTERNS` / `ALLOW_PATTERNS` in `content.js` to tune what counts.
 - Keeps YouTube's "Autoplay next" toggle **off** (one-shot per video, so it never
   disturbs scrolling or in-page navigation).
@@ -29,6 +30,7 @@ apply live to open tabs. Settings are stored per device (Safari implements
 | `content.js` | Runs on youtube.com — toggles CSS + blocks autoplay |
 | `hide.css` | The selectors that hide recommendation UI |
 | `popup.html` / `popup.js` | Toolbar popup with per-feature switches |
+| `_locales/` | UI translations (en, es, pt_BR, fr, de, ja, ko, zh_CN, ru, ar) via `browser.i18n`; Safari picks the locale from the system language |
 
 ## Installing in Safari
 

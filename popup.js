@@ -10,6 +10,22 @@
 
   const api = typeof browser !== "undefined" ? browser : chrome;
 
+  // Localize the UI. Elements keep English text as the fallback; any element
+  // with data-i18n gets its text replaced by the active locale's message.
+  // @@bidi_dir flips the layout for right-to-left locales (Arabic).
+  try {
+    if (api.i18n && api.i18n.getMessage) {
+      const dir = api.i18n.getMessage("@@bidi_dir");
+      if (dir) document.documentElement.dir = dir;
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const msg = api.i18n.getMessage(el.getAttribute("data-i18n"));
+        if (msg) el.textContent = msg;
+      });
+    }
+  } catch (e) {
+    /* ignore — English fallback stays */
+  }
+
   function getStore() {
     try {
       if (api.storage && api.storage.sync) return api.storage.sync;

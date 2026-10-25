@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "Bloquea el feed de recomendaciones de YouTube y detiene la reproducción automática."
+  },
+  "homeFeed": {
+    "message": "Página principal"
+  },
+  "alwaysHidden": {
+    "message": "Siempre oculta"
+  },
+  "hideRelated": {
+    "message": "Ocultar vídeos relacionados y pantalla final"
+  },
+  "hideShorts": {
+    "message": "Ocultar Shorts"
+  },
+  "hideComments": {
+    "message": "Ocultar comentarios"
+  },
+  "hideSubscriptions": {
+    "message": "Ocultar suscripciones"
+  },
+  "hideEntertainment": {
+    "message": "Ocultar vídeos de entretenimiento"
+  },
+  "blockAutoplay": {
+    "message": "Bloquear reproducción automática"
+  },
+  "hint": {
+    "message": "Los cambios se aplican al instante en las pestañas abiertas de YouTube. La configuración se guarda en este dispositivo."
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — recomendaciones ocultas. Usa la búsqueda para encontrar lo que viniste a ver."
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — feed de suscripciones oculto."
+  }
+}

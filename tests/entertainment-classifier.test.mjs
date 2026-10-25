@@ -59,6 +59,16 @@ const BLOCK = [
   "I Reacted To My Old Videos",
   // channel name alone can trigger (itemText concatenates title + channel)
   "Untitled video MrBeast",
+  // non-English entertainment
+  "REACCIONANDO a los mejores memes de la semana",
+  "Melhores momentos do jogo de ontem",
+  "Je réagis à vos vidéos TikTok",
+  "Die besten Streiche 2026",
+  "マイクラ ドッキリ 実況",
+  "치킨 먹방 ASMR",
+  "最强搞笑挑战合集",
+  "ПРАНК над братом — смешная реакция",
+  "تحدي 24 ساعة في الصحراء",
 ];
 
 const KEEP = [
@@ -77,6 +87,15 @@ const KEEP = [
   "Minecraft 建築講座 #3",
   "Уроки Roblox Studio",
   "Tutoriel Fortnite créatif avancé",
+  "Minecraft レッドストーン入門解説",
+  "Roblox 스크립트 강의",
+  "Fortnite 编程教程",
+  "Как сделать сервер Minecraft — обучение",
+  "Réaction chimique expliquée",
+  "GTA Mod programmieren lernen",
+  "تحدي البرمجة شرح كامل",
+  "Aula de programação: desafio de algoritmos",
+  "Reacciones químicas EXPLICADO con ejemplos",
   // plain neutral titles
   "How to file taxes in 2026",
   "Kaggle grandmaster reviews my notebook",

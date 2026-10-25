@@ -1,0 +1,41 @@
+{
+  "extName": {
+    "message": "TubeFocus"
+  },
+  "extDescription": {
+    "message": "يحجب خلاصة توصيات YouTube ويوقف التشغيل التلقائي."
+  },
+  "homeFeed": {
+    "message": "الصفحة الرئيسية"
+  },
+  "alwaysHidden": {
+    "message": "مخفية دائمًا"
+  },
+  "hideRelated": {
+    "message": "إخفاء الفيديوهات المقترحة وشاشة النهاية"
+  },
+  "hideShorts": {
+    "message": "إخفاء Shorts"
+  },
+  "hideComments": {
+    "message": "إخفاء التعليقات"
+  },
+  "hideSubscriptions": {
+    "message": "إخفاء الاشتراكات"
+  },
+  "hideEntertainment": {
+    "message": "إخفاء فيديوهات الترفيه"
+  },
+  "blockAutoplay": {
+    "message": "حظر التشغيل التلقائي"
+  },
+  "hint": {
+    "message": "تُطبَّق التغييرات فورًا على علامات تبويب YouTube المفتوحة. تُحفظ الإعدادات على هذا الجهاز."
+  },
+  "placeholderHome": {
+    "message": "TubeFocus — تم إخفاء التوصيات. استخدم البحث للعثور على ما جئت من أجله."
+  },
+  "placeholderSubs": {
+    "message": "TubeFocus — تم إخفاء خلاصة الاشتراكات."
+  }
+}
