@@ -33,6 +33,7 @@
   // NOTE: the home feed is ALWAYS hidden — there is deliberately no setting for
   // it, so it can't be re-enabled. Only these features are user-toggleable.
   const DEFAULTS = {
+    enabled: true, // master switch — off must make the extension inert
     hideRelated: true,
     hideShorts: true,
     hideComments: true,
@@ -43,20 +44,67 @@
 
   let settings = { ...DEFAULTS };
 
+  /* ---------------- fault containment ----------------
+   *
+   * The extension must never take YouTube down with it. Safari isolates
+   * content-script errors from the page, but a fault loop on our side can
+   * still wreck the experience (jank, half-hidden UI). Every hot path runs
+   * through safely(); after too many faults we BAIL: un-hide everything,
+   * disconnect the observer, and go inert until the next full page load.
+   */
+  const MAX_FAULTS = 20;
+  let faultCount = 0;
+  let bailed = false;
+
+  function bailOut() {
+    if (bailed) return;
+    bailed = true;
+    try {
+      observer.disconnect();
+    } catch (e) {
+      /* ignore */
+    }
+    try {
+      // Reset every gate attribute so hide.css stops hiding anything.
+      const root = document.documentElement;
+      [
+        "data-ytf-hide-home", "data-ytf-hide-related", "data-ytf-hide-shorts",
+        "data-ytf-hide-comments", "data-ytf-hide-subscriptions",
+        "data-ytf-hide-entertainment", "data-ytf-block-autoplay",
+      ].forEach((attr) => root.setAttribute(attr, "0"));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function safely(fn) {
+    if (bailed) return undefined;
+    try {
+      return fn();
+    } catch (e) {
+      if (++faultCount >= MAX_FAULTS) bailOut();
+      return undefined;
+    }
+  }
+
   /* ---------------- settings -> <html> data attributes ---------------- */
 
   // Cheap and click-free: only flips the CSS gate attributes on <html>.
   // Called from init, storage load, onChanged, and navigation — NOT from the
   // MutationObserver (settings can't change from DOM mutations).
   function applySettings() {
+    if (bailed) return;
     const root = document.documentElement;
-    root.setAttribute("data-ytf-hide-home", "1"); // always on, not configurable
-    root.setAttribute("data-ytf-hide-related", settings.hideRelated ? "1" : "0");
-    root.setAttribute("data-ytf-hide-shorts", settings.hideShorts ? "1" : "0");
-    root.setAttribute("data-ytf-hide-comments", settings.hideComments ? "1" : "0");
-    root.setAttribute("data-ytf-hide-subscriptions", settings.hideSubscriptions ? "1" : "0");
-    root.setAttribute("data-ytf-hide-entertainment", settings.hideEntertainment ? "1" : "0");
-    root.setAttribute("data-ytf-block-autoplay", settings.blockAutoplay ? "1" : "0");
+    const on = settings.enabled !== false; // master switch gates everything
+    // Home feed hiding is always on while the extension is enabled — there is
+    // deliberately no per-feature toggle for it.
+    root.setAttribute("data-ytf-hide-home", on ? "1" : "0");
+    root.setAttribute("data-ytf-hide-related", on && settings.hideRelated ? "1" : "0");
+    root.setAttribute("data-ytf-hide-shorts", on && settings.hideShorts ? "1" : "0");
+    root.setAttribute("data-ytf-hide-comments", on && settings.hideComments ? "1" : "0");
+    root.setAttribute("data-ytf-hide-subscriptions", on && settings.hideSubscriptions ? "1" : "0");
+    root.setAttribute("data-ytf-hide-entertainment", on && settings.hideEntertainment ? "1" : "0");
+    root.setAttribute("data-ytf-block-autoplay", on && settings.blockAutoplay ? "1" : "0");
   }
 
   function loadSettings() {
@@ -74,27 +122,27 @@
   // React live to popup toggles. Both scripts write to a single store, so no
   // area filtering is needed; skip removed keys (undefined newValue).
   try {
-    api.storage.onChanged.addListener((changes) => {
+    api.storage.onChanged.addListener((changes) => safely(() => {
       for (const key of Object.keys(changes)) {
         if (key in settings && changes[key].newValue !== undefined) {
           settings[key] = changes[key].newValue;
         }
       }
       applySettings();
-      // Re-run the autoplay one-shot only when blocking was just turned ON —
-      // unrelated toggles must not override an autoplay choice the user made
-      // on the page since our initial one-shot.
-      if (
-        "blockAutoplay" in changes &&
-        changes.blockAutoplay.newValue === true &&
-        changes.blockAutoplay.oldValue !== true
-      ) {
+      // Re-run the autoplay one-shot only when blocking (or the master
+      // switch) was just turned ON — unrelated toggles must not override an
+      // autoplay choice the user made on the page since our initial one-shot.
+      const turnedOn = (key) =>
+        key in changes &&
+        changes[key].newValue === true &&
+        changes[key].oldValue !== true;
+      if (settings.enabled && (turnedOn("blockAutoplay") || turnedOn("enabled"))) {
         autoplayHandled = false;
         scheduleAutoplayDisable();
       }
-      // If entertainment-filtering was just turned on, tag current items.
-      if (settings.hideEntertainment) filterEntertainment();
-    });
+      // If entertainment-filtering just became active, tag current items.
+      if (settings.enabled && settings.hideEntertainment) filterEntertainment();
+    }));
   } catch (e) {
     /* ignore */
   }
@@ -127,8 +175,8 @@
   // resolved (either it was already off, or we just turned it off) so the
   // retry schedule can stop early.
   function disableAutoplayOnce() {
-    if (autoplayHandled) return true;
-    if (!settings.blockAutoplay || !onWatchPage()) return false;
+    if (autoplayHandled || bailed) return true;
+    if (!settings.enabled || !settings.blockAutoplay || !onWatchPage()) return false;
     if (searchHasFocus()) return false; // never steal focus from typing
 
     const toggle = document.querySelector(".ytp-autonav-toggle-button");
@@ -289,9 +337,13 @@
   }
 
   // Full-page pass: used on load/toggle/navigation, NOT on every mutation.
+  // Each item is classified inside safely() so one odd node can never abort
+  // the pass (or, repeatedly, the extension — see fault containment above).
   function filterEntertainment() {
-    if (!settings.hideEntertainment) return;
-    document.querySelectorAll(VIDEO_ITEM_SELECTOR).forEach(classifyItem);
+    if (bailed || !settings.enabled || !settings.hideEntertainment) return;
+    document.querySelectorAll(VIDEO_ITEM_SELECTOR).forEach((el) =>
+      safely(() => classifyItem(el))
+    );
   }
 
   /* ---------------- run + re-run on SPA navigation ---------------- */
@@ -303,8 +355,8 @@
   // navigation, never from mutations.
   const pendingItems = new Set();
   let scheduled = false;
-  const observer = new MutationObserver((records) => {
-    if (!settings.hideEntertainment) return;
+  const observer = new MutationObserver((records) => safely(() => {
+    if (!settings.enabled || !settings.hideEntertainment) return;
     for (const record of records) {
       const host =
         record.target.nodeType === 1
@@ -323,16 +375,17 @@
     scheduled = true;
     requestAnimationFrame(() => {
       scheduled = false;
-      if (!settings.hideEntertainment) {
-        pendingItems.clear();
-        return;
+      try {
+        if (!bailed && settings.enabled && settings.hideEntertainment) {
+          pendingItems.forEach((el) => {
+            if (el.isConnected) safely(() => classifyItem(el));
+          });
+        }
+      } finally {
+        pendingItems.clear(); // never let the pending set outlive its pass
       }
-      pendingItems.forEach((el) => {
-        if (el.isConnected) classifyItem(el);
-      });
-      pendingItems.clear();
     });
-  });
+  }));
 
   function startObserving() {
     if (document.body) {
@@ -343,9 +396,9 @@
   // The player renders after navigation finishes, so retry the one-shot a few
   // times and stop as soon as it resolves.
   function scheduleAutoplayDisable() {
-    if (!settings.blockAutoplay || !onWatchPage()) return;
+    if (bailed || !settings.enabled || !settings.blockAutoplay || !onWatchPage()) return;
     [200, 600, 1500, 3000].forEach((ms) =>
-      setTimeout(() => disableAutoplayOnce(), ms)
+      setTimeout(() => safely(disableAutoplayOnce), ms)
     );
   }
 
@@ -372,7 +425,7 @@
   }
   // Single registration: the event's capture phase passes through document,
   // so a window listener would just run everything twice.
-  document.addEventListener("yt-navigate-finish", onNavigate, true);
+  document.addEventListener("yt-navigate-finish", () => safely(onNavigate), true);
 
   // Localize the CSS ::before placeholder texts (hide.css reads these custom
   // properties, falling back to English when they are unset).

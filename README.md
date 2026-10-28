@@ -17,6 +17,10 @@ Blocks the YouTube recommendation feed and stops autoplay.
   `ENTERTAINMENT_PATTERNS` / `ALLOW_PATTERNS` in `content.js` to tune what counts.
 - Keeps YouTube's "Autoplay next" toggle **off** (one-shot per video, so it never
   disturbs scrolling or in-page navigation).
+- A **master switch** in the popup makes the extension fully inert in one click,
+  and a built-in failsafe un-hides everything and stops all activity if the
+  extension itself faults repeatedly — YouTube can always be restored to stock
+  behavior without uninstalling.
 
 Every feature except the home feed can be toggled from the toolbar popup. Changes
 apply live to open tabs. Settings are stored per device (Safari implements

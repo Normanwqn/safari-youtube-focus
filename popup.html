@@ -6,77 +6,135 @@
     <style>
       :root { color-scheme: light dark; }
       body {
-        font: 14px -apple-system, system-ui, sans-serif;
-        width: 260px;
+        font: 13px/1.4 -apple-system, system-ui, sans-serif;
+        width: 280px;
         margin: 0;
-        padding: 14px 16px;
+        padding: 0;
+        -webkit-user-select: none;
+        user-select: none;
       }
-      h1 {
-        font-size: 15px;
-        margin: 0 0 12px;
+
+      header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px 12px;
+      }
+      header img { width: 28px; height: 28px; border-radius: 6px; }
+      h1 { font-size: 15px; font-weight: 600; margin: 0; flex: 1; }
+
+      .card {
+        margin: 0 10px 10px;
+        border-radius: 10px;
+        /* rgba fallback first: color-mix needs Safari 16.2+, floor is 16.0 */
+        background: rgba(120, 120, 128, 0.08);
+        background: color-mix(in srgb, currentColor 6%, transparent);
+        overflow: hidden;
       }
       .row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 8px 0;
-        /* rgba fallback first: color-mix needs Safari 16.2+, floor is 16.0 */
-        border-top: 1px solid rgba(128, 128, 128, 0.25);
-        border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+        gap: 10px;
+        padding: 9px 12px;
+        transition: background 0.1s;
       }
-      .row:first-of-type { border-top: none; }
-      .row.locked label { cursor: default; opacity: 0.7; }
+      .row + .row {
+        border-top: 1px solid rgba(120, 120, 128, 0.18);
+        border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+      }
+      .row:hover { background: rgba(120, 120, 128, 0.1); }
+      .row label { flex: 1; cursor: pointer; }
+      .row.locked label { cursor: default; }
       .always {
         font-size: 11px;
         padding: 2px 8px;
         border-radius: 10px;
-        background: rgba(128, 128, 128, 0.15);
+        background: rgba(120, 120, 128, 0.15);
         background: color-mix(in srgb, currentColor 10%, transparent);
-        opacity: 0.7;
+        opacity: 0.75;
+        white-space: nowrap;
       }
-      label { cursor: pointer; }
-      input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
+
+      /* iOS-style switch, CSS-only, RTL-aware */
+      input.switch {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 36px;
+        height: 21px;
+        margin: 0;
+        border-radius: 11px;
+        background: rgba(120, 120, 128, 0.32);
+        position: relative;
         cursor: pointer;
+        flex: none;
+        transition: background 0.18s;
+        outline-offset: 2px;
       }
+      input.switch:checked { background: #34c759; }
+      input.switch::before {
+        content: "";
+        position: absolute;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        background: #fff;
+        top: 2px;
+        inset-inline-start: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        transition: transform 0.18s;
+      }
+      input.switch:checked::before { transform: translateX(15px); }
+      :dir(rtl) input.switch:checked::before { transform: translateX(-15px); }
+
+      /* dim the feature rows while the master switch is off */
+      body.off .features { opacity: 0.45; pointer-events: none; }
+      .features { transition: opacity 0.15s; }
+
       .hint {
-        margin-top: 12px;
+        margin: 0;
+        padding: 2px 16px 12px;
         font-size: 11px;
-        opacity: 0.6;
+        opacity: 0.55;
       }
     </style>
   </head>
   <body>
-    <h1>TubeFocus</h1>
+    <header>
+      <img src="icon-48.png" alt="" />
+      <h1>TubeFocus</h1>
+      <input type="checkbox" class="switch" id="enabled" data-i18n-aria="enabled" aria-label="Enabled" />
+    </header>
 
-    <div class="row locked">
-      <label data-i18n="homeFeed">Home feed</label>
-      <span class="always" data-i18n="alwaysHidden">Always hidden</span>
-    </div>
-    <div class="row">
-      <label for="hideRelated" data-i18n="hideRelated">Hide related / end-screen</label>
-      <input type="checkbox" id="hideRelated" />
-    </div>
-    <div class="row">
-      <label for="hideShorts" data-i18n="hideShorts">Hide Shorts</label>
-      <input type="checkbox" id="hideShorts" />
-    </div>
-    <div class="row">
-      <label for="hideComments" data-i18n="hideComments">Hide comments</label>
-      <input type="checkbox" id="hideComments" />
-    </div>
-    <div class="row">
-      <label for="hideSubscriptions" data-i18n="hideSubscriptions">Hide subscriptions</label>
-      <input type="checkbox" id="hideSubscriptions" />
-    </div>
-    <div class="row">
-      <label for="hideEntertainment" data-i18n="hideEntertainment">Hide entertainment videos</label>
-      <input type="checkbox" id="hideEntertainment" />
-    </div>
-    <div class="row">
-      <label for="blockAutoplay" data-i18n="blockAutoplay">Block autoplay</label>
-      <input type="checkbox" id="blockAutoplay" />
+    <div class="card features">
+      <div class="row locked">
+        <label data-i18n="homeFeed">Home feed</label>
+        <span class="always" data-i18n="alwaysHidden">Always hidden</span>
+      </div>
+      <div class="row">
+        <label for="hideRelated" data-i18n="hideRelated">Hide related / end-screen</label>
+        <input type="checkbox" class="switch" id="hideRelated" />
+      </div>
+      <div class="row">
+        <label for="hideShorts" data-i18n="hideShorts">Hide Shorts</label>
+        <input type="checkbox" class="switch" id="hideShorts" />
+      </div>
+      <div class="row">
+        <label for="hideComments" data-i18n="hideComments">Hide comments</label>
+        <input type="checkbox" class="switch" id="hideComments" />
+      </div>
+      <div class="row">
+        <label for="hideSubscriptions" data-i18n="hideSubscriptions">Hide subscriptions</label>
+        <input type="checkbox" class="switch" id="hideSubscriptions" />
+      </div>
+      <div class="row">
+        <label for="hideEntertainment" data-i18n="hideEntertainment">Hide entertainment videos</label>
+        <input type="checkbox" class="switch" id="hideEntertainment" />
+      </div>
+      <div class="row">
+        <label for="blockAutoplay" data-i18n="blockAutoplay">Block autoplay</label>
+        <input type="checkbox" class="switch" id="blockAutoplay" />
+      </div>
     </div>
 
     <p class="hint" data-i18n="hint">Changes apply instantly to open YouTube tabs. Settings are stored on this device.</p>

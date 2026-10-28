@@ -37,5 +37,8 @@
   },
   "placeholderSubs": {
     "message": "TubeFocus — تم إخفاء خلاصة الاشتراكات."
+  },
+  "enabled": {
+    "message": "مفعَّل"
   }
 }

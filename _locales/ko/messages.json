@@ -37,5 +37,8 @@
   },
   "placeholderSubs": {
     "message": "TubeFocus — 구독 피드가 숨겨졌습니다."
+  },
+  "enabled": {
+    "message": "사용"
   }
 }

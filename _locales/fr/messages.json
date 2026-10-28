@@ -37,5 +37,8 @@
   },
   "placeholderSubs": {
     "message": "TubeFocus — fil des abonnements masqué."
+  },
+  "enabled": {
+    "message": "Activé"
   }
 }

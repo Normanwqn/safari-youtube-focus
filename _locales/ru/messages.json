@@ -37,5 +37,8 @@
   },
   "placeholderSubs": {
     "message": "TubeFocus — лента подписок скрыта."
+  },
+  "enabled": {
+    "message": "Включено"
   }
 }

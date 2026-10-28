@@ -37,5 +37,8 @@
   },
   "placeholderSubs": {
     "message": "TubeFocus — feed de inscrições oculto."
+  },
+  "enabled": {
+    "message": "Ativado"
   }
 }

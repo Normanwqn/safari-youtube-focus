@@ -41,10 +41,10 @@ test("manifest __MSG__ placeholders resolve against en", () => {
   }
 });
 
-test("popup data-i18n keys all exist in en", () => {
+test("popup data-i18n(-aria) keys all exist in en", () => {
   const html = readFileSync(new URL("popup.html", root), "utf8");
-  const keys = [...html.matchAll(/data-i18n="(\w+)"/g)].map((m) => m[1]);
-  assert.ok(keys.length >= 8, "expected the popup to be annotated");
+  const keys = [...html.matchAll(/data-i18n(?:-aria)?="(\w+)"/g)].map((m) => m[1]);
+  assert.ok(keys.length >= 9, "expected the popup to be annotated");
   for (const key of keys) {
     assert.ok(en[key], `popup references missing message key ${key}`);
   }

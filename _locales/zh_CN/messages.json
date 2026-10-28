@@ -37,5 +37,8 @@
   },
   "placeholderSubs": {
     "message": "TubeFocus — 已隐藏订阅信息流。"
+  },
+  "enabled": {
+    "message": "已启用"
   }
 }
